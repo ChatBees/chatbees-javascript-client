@@ -27,8 +27,8 @@ describe('ChatClient', () => {
 
   test('should reset conversation', () => {
     chatClient.resetConversation();
-    expect(chatClient['conversationId']).toBe('');
-    expect(chatClient['history']).toEqual([]);
+    expect(chatClient.conversationId).toBe('');
+    expect(chatClient.history).toEqual([]);
   });
 
   test('should create or update feedback', async () => {

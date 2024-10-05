@@ -12,26 +12,36 @@ describe('ChatClient', () => {
     jest
       .spyOn(chatClient as any, 'post')
       .mockImplementation((path: any, payload?: any) => {
-        console.log('post called with:', path, payload);
+        console.log(
+          'post called with:',
+          path,
+          JSON.stringify(payload, null, 2)
+        );
         return originalPost.call(chatClient, path, payload);
       });
   });
 
   test('should ask question', async () => {
+    expect(chatClient.history.length).toBe(0);
+
     const data = {
       namespace_name: process.env.NAMESPACE_NAME!,
       collection_name: process.env.COLLECTION_NAME!,
       question: 'What is HTML?',
     };
     await chatClient.ask(data);
+    expect(chatClient.history.length).toBe(1);
 
     data.question = 'What is CSS?';
     await chatClient.ask(data);
+    expect(chatClient.history.length).toBe(2);
 
     chatClient.resetConversation();
+    expect(chatClient.history.length).toBe(0);
 
     data.question = 'What is JavaScript?';
     const response = await chatClient.ask(data);
+    expect(chatClient.history.length).toBe(1);
     expect(response).toBeTruthy();
   }, 20000);
 
