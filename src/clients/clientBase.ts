@@ -1,10 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { configDotenv } from 'dotenv';
 import { PostPayLoad } from '../types';
-
-configDotenv();
-
-const ENV_TEST_BASE_URL = process.env.ENV_TEST_BASE_URL || '';
 
 export class ClientBase {
   private readonly baseUrl: string;
@@ -13,14 +8,7 @@ export class ClientBase {
     private accountId: string,
     protected apiKey?: string
   ) {
-    if (ENV_TEST_BASE_URL === 'preprod') {
-      this.baseUrl = `https://${this.accountId}.preprod.aws.chatbees.ai`;
-    }
-    if (ENV_TEST_BASE_URL.includes('localhost')) {
-      this.baseUrl = ENV_TEST_BASE_URL;
-    } else {
-      this.baseUrl = `https://${this.accountId}.us-west-2.aws.chatbees.ai`;
-    }
+    this.baseUrl = `https://${this.accountId}.us-west-2.aws.chatbees.ai`;
   }
 
   private get headers(): Record<string, string> {

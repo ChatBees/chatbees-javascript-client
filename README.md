@@ -7,7 +7,7 @@ This is the official JavaScript client for ChatBees, a powerful chat API service
 To install the package and its peerDependencies, use npm:
 
 ```sh
-npm install @chatbees/client axios dotenv
+npm install @chatbees/client axios
 ```
 
 ## Usage
