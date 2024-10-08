@@ -19,7 +19,11 @@ const { ChatClient } = require('@chatbees/client');
 
 const client = new ChatClient('account_id');
 client
-  .ask({ question: 'What is the weather today?' })
+  .ask({
+    namespace_name: 'public',
+    collection_name: 'chatbees',
+    question: 'What is the weather today?',
+  })
   .then((response) => {
     console.log(response.data);
   })
