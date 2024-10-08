@@ -7,10 +7,12 @@ function modifyPackageJson(contents) {
   try {
     const packageJson = JSON.parse(contents);
     const {
+      /* eslint-disable @typescript-eslint/no-unused-vars */
       scripts,
       private: isPrivate,
       dependencies,
       devDependencies,
+      /* eslint-enable @typescript-eslint/no-unused-vars */
       ...rest
     } = packageJson;
 
