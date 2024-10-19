@@ -20,11 +20,13 @@ export interface ChatHistoryElement {
 export class ChatClient extends ClientBase {
   history: ChatHistoryElement[] = [];
   conversationId?: string = undefined;
+  private readonly historyChangeEvent: Event = new Event('historyChange');
 
   /**
    * Sends a question to the chat API and updates the chat history.
    * @param data - The request data containing the question and other parameters.
    * @returns A promise that resolves to the API response.
+   * @fires ChatClient#historyChange
    */
   ask = async (data: AskRequest) => {
     const history_messages =
@@ -40,7 +42,7 @@ export class ChatClient extends ClientBase {
 
     const newHistoryElement: ChatHistoryElement = { question: data.question };
     this.history.push(newHistoryElement);
-    this.dispatchEvent(new Event('historyChange'));
+    this.dispatchEvent(this.historyChangeEvent);
 
     const response = await this.post<AskResponse>('/docs/ask', {
       data: {
@@ -52,17 +54,19 @@ export class ChatClient extends ClientBase {
 
     this.conversationId = response.data.conversation_id;
     newHistoryElement.response = response.data;
-    this.dispatchEvent(new Event('historyChange'));
+    this.dispatchEvent(this.historyChangeEvent);
 
     return response;
   };
 
   /**
    * Resets the current conversation and clears the chat history.
+   * @fires ChatClient#historyChange
    */
   resetConversation = () => {
     this.conversationId = '';
     this.history = [];
+    this.dispatchEvent(this.historyChangeEvent);
   };
 
   /**
