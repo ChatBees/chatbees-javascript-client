@@ -12,6 +12,7 @@ import { ClientBase } from './clientBase';
 export interface ChatHistoryElement {
   question: string;
   response?: AskResponse;
+  error?: Error;
 }
 
 /**
@@ -44,19 +45,23 @@ export class ChatClient extends ClientBase {
     this.history.push(newHistoryElement);
     this.dispatchEvent(this.historyChangeEvent);
 
-    const response = await this.post<AskResponse>('/docs/ask', {
-      data: {
-        conversation_id: this.conversationId || undefined,
-        history_messages,
-        ...data,
-      },
-    });
+    try {
+      const response = await this.post<AskResponse>('/docs/ask', {
+        data: {
+          conversation_id: this.conversationId || undefined,
+          history_messages,
+          ...data,
+        },
+      });
 
-    this.conversationId = response.data.conversation_id;
-    newHistoryElement.response = response.data;
+      this.conversationId = response.data.conversation_id;
+      newHistoryElement.response = response.data;
+    } catch (error) {
+      newHistoryElement.error = error as Error;
+    }
     this.dispatchEvent(this.historyChangeEvent);
 
-    return response;
+    return newHistoryElement.response;
   };
 
   /**
