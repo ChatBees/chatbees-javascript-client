@@ -13,7 +13,7 @@ export class ClientBase extends EventTarget {
    * @param apiKey - Optional API key for authentication.
    */
   constructor(
-    private accountId: string,
+    protected accountId: string,
     protected apiKey?: string
   ) {
     super();

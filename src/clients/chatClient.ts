@@ -1,6 +1,7 @@
 import {
   AskRequest,
   AskResponse,
+  CollectionBaseRequest,
   ConfigureChatRequest,
   CreateOrUpdateFeedbackRequest,
 } from '../types';
@@ -9,7 +10,8 @@ import { ClientBase } from './clientBase';
 /**
  * Represents an element in the chat history.
  */
-export interface ChatHistoryElement {
+export interface ChatHistoryElement extends CollectionBaseRequest {
+  accountId: string;
   question: string;
   response?: AskResponse;
   error?: Error;
@@ -41,7 +43,12 @@ export class ChatClient extends ClientBase {
           )
         : undefined;
 
-    const newHistoryElement: ChatHistoryElement = { question: data.question };
+    const newHistoryElement: ChatHistoryElement = {
+      accountId: this.accountId,
+      namespace_name: data.namespace_name,
+      collection_name: data.collection_name,
+      question: data.question,
+    };
     this.history.push(newHistoryElement);
     this.dispatchEvent(this.historyChangeEvent);
 
