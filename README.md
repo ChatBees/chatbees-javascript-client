@@ -18,6 +18,12 @@ Here is an example of how to use the ChatClient of the package:
 const { ChatClient } = require('@chatbees/client');
 
 const client = new ChatClient('account_id');
+
+// Add an event listener for historyChange
+client.addEventListener('historyChange', () => {
+  console.log('Chat history has changed:', client.history);
+});
+
 client
   .ask({
     namespace_name: 'public',

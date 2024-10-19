@@ -45,6 +45,20 @@ describe('ChatClient', () => {
     expect(response).toBeTruthy();
   }, 20000);
 
+  test('should dispatch historyChange event', async () => {
+    const historyChangeListener = jest.fn();
+    chatClient.addEventListener('historyChange', historyChangeListener);
+
+    const data = {
+      namespace_name: process.env.NAMESPACE_NAME!,
+      collection_name: process.env.COLLECTION_NAME!,
+      question: 'What is TypeScript?',
+    };
+
+    await chatClient.ask(data);
+    expect(historyChangeListener).toHaveBeenCalledTimes(2); // Once before the request and once after the response
+  });
+
   test('should create or update feedback', async () => {
     const data = {
       namespace_name: process.env.NAMESPACE_NAME!,
