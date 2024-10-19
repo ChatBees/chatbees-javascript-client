@@ -32,16 +32,20 @@ export class ChatClient extends ClientBase {
    * @fires ChatClient#historyChange
    */
   ask = async (data: AskRequest) => {
-    const history_messages =
-      this.history.length > 0
-        ? this.history.reduce(
-            (acc, cur) => [
-              ...acc,
-              [cur.question, cur.response?.answer || ''] as [string, string],
-            ],
-            [] as [string, string][]
-          )
-        : undefined;
+    if (!data.history_messages) {
+      data.history_messages =
+        this.history.length > 0
+          ? this.history
+              .filter((cur) => cur.response?.answer)
+              .map((cur) => [cur.question, cur.response!.answer!])
+          : undefined;
+    }
+    if (!data.conversation_id) {
+      data.conversation_id =
+        this.conversationId ||
+        this.history.find((cur) => cur.response?.conversation_id)?.response
+          ?.conversation_id;
+    }
 
     const newHistoryElement: ChatHistoryElement = {
       accountId: this.accountId,
@@ -54,11 +58,7 @@ export class ChatClient extends ClientBase {
 
     try {
       const response = await this.post<AskResponse>('/docs/ask', {
-        data: {
-          conversation_id: this.conversationId || undefined,
-          history_messages,
-          ...data,
-        },
+        data,
       });
 
       this.conversationId = response.data.conversation_id;
