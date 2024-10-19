@@ -17,11 +17,11 @@ export interface AskResponse {
   conversation_id: string;
 }
 
-enum FeedbackSource {
+export enum FeedbackSource {
   WEBSITE = 'WEBSITE',
 }
 
-interface UnregisteredUser {
+export interface UnregisteredUser {
   source: FeedbackSource;
   email?: string;
   name?: string;
