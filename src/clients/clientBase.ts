@@ -1,6 +1,8 @@
 import axios, { AxiosResponse } from 'axios';
 import { PostPayLoad } from '../types';
 
+const ENV_TEST_BASE_URL = process.env.ENV_TEST_BASE_URL || '';
+
 /**
  * Base class for API clients, providing common functionality for making HTTP requests.
  */
@@ -17,7 +19,13 @@ export class ClientBase extends EventTarget {
     protected apiKey?: string
   ) {
     super();
-    this.baseUrl = `https://${this.accountId}.us-west-2.aws.chatbees.ai`;
+    if (ENV_TEST_BASE_URL === 'preprod') {
+      this.baseUrl = `https://${this.accountId}.preprod.aws.chatbees.ai`;
+    } else if (ENV_TEST_BASE_URL.includes('localhost')) {
+      this.baseUrl = ENV_TEST_BASE_URL;
+    } else {
+      this.baseUrl = `https://${this.accountId}.us-west-2.aws.chatbees.ai`;
+    }
   }
 
   /**
